@@ -53,17 +53,20 @@ jobs:
           }
           EOF
 
-      - name: Fix Kotlin singleLine
-        run: |
+            - name: Fix Kotlin singleLine
+      - run: |
           python3 - <<'PY'
           from pathlib import Path
 
-          p = Path("source/app/src/main/java/com/rutor/nativeapp/MainActivity.kt")
+          files = list(Path("source").rglob("MainActivity.kt"))
+          if not files:
+              raise SystemExit("MainActivity.kt not found")
+
+          p = files[0]
           s = p.read_text(encoding="utf-8")
-          if "singleLine = true" not in s:
-              raise SystemExit("Expected singleLine setting not found")
           s = s.replace("singleLine = true", "maxLines = 1")
           p.write_text(s, encoding="utf-8")
+          print("Updated:", p)
           PY
             - name: Build APK
         working-directory: source
