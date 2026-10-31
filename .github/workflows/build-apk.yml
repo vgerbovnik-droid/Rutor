@@ -38,8 +38,12 @@ jobs:
 
       - name: Extract project
         run: |
-          mkdir source
+          mkdir -p source
           unzip -q Rutor-Android.zip -d source
+
+      - name: Fix Java compatibility
+        run: |
+          cat >> source/app/build.gradle <<'EOF'
 
           android {
               compileOptions {
@@ -52,7 +56,6 @@ jobs:
       - name: Build APK
         working-directory: source
         run: gradle --no-daemon assembleDebug
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
