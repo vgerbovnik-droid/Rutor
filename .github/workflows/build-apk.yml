@@ -56,7 +56,3 @@ jobs:
           name: RUTOR-APK
           path: source/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
-
-          name: RUTOR-Android-APK
-          path: source/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
