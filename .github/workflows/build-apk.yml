@@ -65,7 +65,7 @@ jobs:
           s = s.replace("singleLine = true", "maxLines = 1")
           p.write_text(s, encoding="utf-8")
           PY
-      - name: Upload APK
+      - name: Build APK Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: RUTOR-Android-APK
