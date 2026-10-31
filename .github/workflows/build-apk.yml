@@ -53,9 +53,18 @@ jobs:
           }
           EOF
 
-      - name: Build APK
-        working-directory: source
-        run: gradle --no-daemon assembleDebug
+      - name: Fix Kotlin singleLine
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("source/app/src/main/java/com/rutor/nativeapp/MainActivity.kt")
+          s = p.read_text(encoding="utf-8")
+          if "singleLine = true" not in s:
+              raise SystemExit("Expected singleLine setting not found")
+          s = s.replace("singleLine = true", "maxLines = 1")
+          p.write_text(s, encoding="utf-8")
+          PY
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
