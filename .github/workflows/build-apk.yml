@@ -41,7 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p source
-          unzip -q Rutor-Fixed.zip -d source
+          unzip -q Rutor-Detail-v1.1-source.zip -d source
           test -f source/settings.gradle
           test -f source/app/build.gradle
           test -f source/app/src/main/java/com/rutor/nativeapp/MainActivity.kt
