@@ -26,7 +26,7 @@ jobs:
       - name: Extract project
         run: |
           mkdir -p source
-          unzip -oq Rutor-Detail-v1.1-source.zip -d source
+          unzip -oq RUTOR-v1.2-source.zip -d source
           test -f source/app/build.gradle
 
       - name: Set up Android SDK
