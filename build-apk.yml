@@ -1,9 +1,10 @@
+
 name: Build RUTOR APK
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,48 +12,41 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Java 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Install Android SDK packages
-        shell: bash
+      - name: Extract project
         run: |
-          set -euo pipefail
-          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
-          MANAGER="$SDK/cmdline-tools/latest/bin/sdkmanager"
-          test -x "$MANAGER"
-          yes | "$MANAGER" --licenses >/dev/null || true
-          "$MANAGER" "platforms;android-36" "build-tools;35.0.0"
+          mkdir -p source
+          unzip -oq Rutor-Detail-v1.1-source.zip -d source
+          test -f source/app/build.gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-36" "build-tools;35.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.13'
 
-      - name: Extract corrected project
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p source
-          unzip -q Rutor-Fixed.zip -d source
-          test -f source/settings.gradle
-          test -f source/app/build.gradle
-          test -f source/app/src/main/java/com/rutor/nativeapp/MainActivity.kt
-
       - name: Build APK
         working-directory: source
-        run: gradle --no-daemon --stacktrace assembleDebug
+        run: gradle --no-daemon assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: RUTOR-APK
+          name: RUTOR-1.1-APK
           path: source/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
